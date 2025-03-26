@@ -3,6 +3,7 @@
 using namespace std;
 using ll = long long;
 
+const ll SIZE = 100000;
 const int BUCKETS = 16;
 
 struct ppair {
@@ -99,24 +100,56 @@ void radix_sort(ppair a[], int n) {
     delete[] tmp;
 }
 
+void generate_random_hex_string(char* str, int len, mt19937& gen) {
+    static uniform_int_distribution<> hex_dist(0, 15);
+    static const char hex_chars[] = "0123456789abcdef";
+    for (int i = 0; i < len; ++i) {
+        str[i] = hex_chars[hex_dist(gen)];
+    }
+    str[len] = '\0';
+}
+
+char random_hex_char(mt19937& gen) {
+    static uniform_int_distribution<> hex_dist(0, 15);
+    int val = hex_dist(gen);
+    return (val < 10) ? ('0' + val) : ('a' + val - 10);
+}
+
 int main() {
+    auto start_time = std::chrono::high_resolution_clock::now();
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
+
+    random_device rd;
+    mt19937 gen(rd());
 
     anivector arr;
     vector_init(&arr);
     char key[33] = {0};
     char value[65] = {0};
-    ppair pp;
-    while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
+    int n = 10;
+    for (int i = 0; i < n; ++i) {
+        ppair pp;
+        generate_random_hex_string(key, 32, gen);
+        generate_random_hex_string(value, 64, gen);
+        strcpy(pp.key, key);
+        strcpy(pp.value, value);
         vector_push_back(&arr, pp);
     }
+    // while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
+    //     vector_push_back(&arr, pp);
+    // }
 
     radix_sort(arr.data, arr.size);
 
     for(int i = 0; i < arr.size; ++i) {
         printf("%s\t%s\n", arr.data[i].key, arr.data[i].value);
     }
+
+    auto end_time = std::chrono::high_resolution_clock::now();  // Замер времени окончания
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    std::cerr << "Execution time: " << duration.count() << " ms\n";  // Вывод времени
+
     vector_destroy(&arr);
     return 0;
 }
