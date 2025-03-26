@@ -3,7 +3,6 @@
 using namespace std;
 using ll = long long;
 
-const ll SIZE = 100000;
 const int BUCKETS = 16;
 
 struct ppair {
