@@ -1,0 +1,23 @@
+00000000000000000000000000000000
+ffffffffffffffffffffffffffffffff
+00000000000000000000000000000000
+ffffffffffffffffffffffffffffffff
+
+    vector <vector<char>> a;
+    string key, value;
+    while (cin >> key >> value) {
+        pair <vector<char>, string> p;
+        vector<char> v_c;
+        for (char i: key) {
+            v_c.push_back(i);
+        }
+        p.first = v_c;
+        p.second = key;
+    }
+    radix_sort(a);
+    for (auto i: a) {
+        for (auto j: i) {
+            cout << j;
+        }
+        cout << '\n';
+    }

@@ -3,6 +3,18 @@
 using namespace std;
 using ll = long long;
 
+const ll SIZE = 100000;
+
+struct ppair {
+    char key[33];
+    char value[65];
+};
+
+struct bucket {
+    ppair pairs[SIZE];
+    int count;
+};
+
 int f(char c) {
     switch(c) {
         case '0': return 0;
@@ -24,14 +36,6 @@ int f(char c) {
     }
 }
 
-// char* htb(string s) {
-//     char *ans;
-//     for (auto i: s) {
-//         strcat(ans, f(i));
-//     }
-//     return ans;
-// }
-
 void radix_sort(vector <pair<vector<char>, string>>& a) {
     for (int p = 31; p >= 0; --p) {
         vector <vector<pair<vector<char>, string>>> buckets(16, vector<pair<vector<char>, string>> (0));
@@ -47,18 +51,20 @@ void radix_sort(vector <pair<vector<char>, string>>& a) {
     }
 }
 
-void radix_sort_bitmask(vector<int>& a) {
-    for (int bit = 0; bit < 128; ++bit) {
-        int mask = 1 << bit;
-        vector<vector<int>> buckets(2, vector<int>(0));
-        for (auto num: a) {
-            buckets[(num & mask) != 0].push_back(num);
+void radix_sort_ultra(ppair a[], int c) {
+    for (int p = 31; p >= 0; --p) {
+        bucket buckets[16] = {};
+        
+        for (int i = 0; i < c; ++i) {
+            int bucket_idx = f(a[i].key[p]);
+            buckets[bucket_idx].pairs[buckets[bucket_idx].count++] = a[i];
         }
-        a.clear();
-        for (auto i: buckets) {
-            for (auto j: i) {
-                a.push_back(j);
-            } 
+
+        int pos = 0;
+        for (auto &b : buckets) {
+            for (int i = 0; i < b.count; ++i) {
+                a[pos++] = b.pairs[i];
+            }
         }
     }
 }
@@ -66,26 +72,43 @@ void radix_sort_bitmask(vector<int>& a) {
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
+    char key[33] = {0};
+    char value[65] = {0};
+    ppair* a = new ppair[SIZE];
+    int c = 0;
+    while(scanf("%s\t%s", key, value) != EOF) {
+        ppair pp;
+        strncpy(pp.key, key, 33);
+        strncpy(pp.value, value, 65);
+        a[c] = pp;
+        c++;
+    }
 
-    vector <pair<vector<char>, string>> a;
-    string key, value;
-    while (cin >> key >> value) {
-        pair <vector<char>, string> p;
-        vector<char> v_c;
-        for (char i: key) {
-            v_c.push_back(i);
-        }
-        p.first = v_c;
-        p.second = value;
-        a.push_back(p);
+    radix_sort_ultra(a, c);
+
+    for(int i = 0; i < c; ++i) {
+        printf("%s\t%s\n", a[i].key, a[i].value);
     }
-    radix_sort(a);
-    for (auto i: a) {
-        for (auto j: i.first) {
-            cout << j;
-        }
-        cout << '\t';
-        cout << i.second << '\n';
-    }
+
+    // vector <pair<vector<char>, string>> a;
+    // string key, value;
+    // while (cin >> key >> value) {
+    //     pair <vector<char>, string> p;
+    //     vector<char> v_c;
+    //     for (char i: key) {
+    //         v_c.push_back(i);
+    //     }
+    //     p.first = v_c;
+    //     p.second = value;
+    //     a.push_back(p);
+    // }
+    // radix_sort(a);
+    // for (auto i: a) {
+    //     for (auto j: i.first) {
+    //         cout << j;
+    //     }
+    //     cout << '\t';
+    //     cout << i.second << '\n';
+    // }
     return 0;
 }
