@@ -4,16 +4,50 @@ using namespace std;
 using ll = long long;
 
 const ll SIZE = 100000;
+const int BUCKETS = 16;
 
 struct ppair {
     char key[33];
     char value[65];
 };
 
-struct bucket {
-    ppair pairs[SIZE];
-    int count;
+struct anivector {
+    ppair* data;
+    int size;
+    int capacity;
 };
+
+void vector_init(anivector* v) {
+    v->data = nullptr;
+    v->size = 0;
+    v->capacity = 0;
+}
+
+void vector_reserve(anivector* v, int new_capacity) {
+    if (new_capacity <= v->capacity) return;
+    
+    ppair* new_data = new ppair[new_capacity];
+    if (v->data) {
+        memcpy(new_data, v->data, v->size * sizeof(ppair));
+        delete[] v->data;
+    }
+    v->data = new_data;
+    v->capacity = new_capacity;
+}
+
+void vector_push_back(anivector* v, const ppair& item) {
+    if (v->size == v->capacity) {
+        int new_cap = (v->capacity == 0) ? 4 : v->capacity * 2;
+        vector_reserve(v, new_cap);
+    }
+    v->data[v->size++] = item;
+}
+
+void vector_destroy(anivector* v) {
+    delete[] v->data;
+    v->data = nullptr;
+    v->size = v->capacity = 0;
+}
 
 int f(char c) {
     switch(c) {
@@ -36,79 +70,54 @@ int f(char c) {
     }
 }
 
-void radix_sort(vector <pair<vector<char>, string>>& a) {
+void radix_sort(ppair a[], int n) {
+    ppair* tmp = new ppair[n];
+    
     for (int p = 31; p >= 0; --p) {
-        vector <vector<pair<vector<char>, string>>> buckets(16, vector<pair<vector<char>, string>> (0));
-        for (int i = 0; i < a.size(); ++i) {
-            buckets[f(a[i].first[p])].push_back(a[i]);
-        }
-        a.clear();
-        for (auto i: buckets) {
-            for (auto j: i) {
-                a.push_back(j);
-            }
-        }
-    }
-}
-
-void radix_sort_ultra(ppair a[], int c) {
-    for (int p = 31; p >= 0; --p) {
-        bucket buckets[16] = {};
+        int count[BUCKETS] = {0};
         
-        for (int i = 0; i < c; ++i) {
-            int bucket_idx = f(a[i].key[p]);
-            buckets[bucket_idx].pairs[buckets[bucket_idx].count++] = a[i];
+        for (int i = 0; i < n; ++i) {
+            int b = f(a[i].key[p]);
+            count[b]++;
         }
-
-        int pos = 0;
-        for (auto &b : buckets) {
-            for (int i = 0; i < b.count; ++i) {
-                a[pos++] = b.pairs[i];
-            }
+        
+        int prefix[BUCKETS];
+        int sum = 0;
+        for (int b = 0; b < BUCKETS; ++b) {
+            prefix[b] = sum;
+            sum += count[b];
         }
+        
+        for (int i = 0; i < n; ++i) {
+            int b = f(a[i].key[p]);
+            int pos = prefix[b]++;
+            tmp[pos] = a[i];
+        }
+        
+        memcpy(a, tmp, n * sizeof(ppair));
     }
+    
+    delete[] tmp;
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
+
+    anivector arr;
+    vector_init(&arr);
     char key[33] = {0};
     char value[65] = {0};
-    ppair* a = new ppair[SIZE];
-    int c = 0;
-    while(scanf("%s\t%s", key, value) != EOF) {
-        ppair pp;
-        strncpy(pp.key, key, 33);
-        strncpy(pp.value, value, 65);
-        a[c] = pp;
-        c++;
+    ppair pp;
+    while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
+        vector_push_back(&arr, pp);
     }
 
-    radix_sort_ultra(a, c);
+    radix_sort(arr.data, arr.size);
 
-    for(int i = 0; i < c; ++i) {
-        printf("%s\t%s\n", a[i].key, a[i].value);
+    for(int i = 0; i < arr.size; ++i) {
+        printf("%s\t%s\n", arr.data[i].key, arr.data[i].value);
     }
-
-    // vector <pair<vector<char>, string>> a;
-    // string key, value;
-    // while (cin >> key >> value) {
-    //     pair <vector<char>, string> p;
-    //     vector<char> v_c;
-    //     for (char i: key) {
-    //         v_c.push_back(i);
-    //     }
-    //     p.first = v_c;
-    //     p.second = value;
-    //     a.push_back(p);
-    // }
-    // radix_sort(a);
-    // for (auto i: a) {
-    //     for (auto j: i.first) {
-    //         cout << j;
-    //     }
-    //     cout << '\t';
-    //     cout << i.second << '\n';
-    // }
+    vector_destroy(&arr);
     return 0;
 }
