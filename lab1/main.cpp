@@ -98,9 +98,28 @@ void radix_sort(ppair a[], int n) {
     delete[] tmp;
 }
 
+void generate_random_hex_string(char* str, int len, mt19937& gen) {
+    static uniform_int_distribution<> hex_dist(0, 15);
+    static const char hex_chars[] = "0123456789abcdef";
+    for (int i = 0; i < len; ++i) {
+        str[i] = hex_chars[hex_dist(gen)];
+    }
+    str[len] = '\0';
+}
+
+char random_hex_char(mt19937& gen) {
+    static uniform_int_distribution<> hex_dist(0, 15);
+    int val = hex_dist(gen);
+    return (val < 10) ? ('0' + val) : ('a' + val - 10);
+}
+
 int main() {
+    auto start_time = std::chrono::high_resolution_clock::now();
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
+
+    random_device rd;
+    mt19937 gen(rd());
 
     anivector arr;
     anivector_init(&arr);
@@ -110,6 +129,9 @@ int main() {
     while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
         push_back(&arr, pp);
     }
+    // while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
+    //     vector_push_back(&arr, pp);
+    // }
 
     radix_sort(arr.data, arr.size);
 
