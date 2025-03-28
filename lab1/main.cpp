@@ -17,13 +17,13 @@ struct anivector {
     int capacity;
 };
 
-void vector_init(anivector* v) {
+void anivector_init(anivector* v) {
     v->data = nullptr;
     v->size = 0;
     v->capacity = 0;
 }
 
-void vector_reserve(anivector* v, int new_capacity) {
+void reserve(anivector* v, int new_capacity) {
     if (new_capacity <= v->capacity) return;
     
     ppair* new_data = new ppair[new_capacity];
@@ -35,18 +35,19 @@ void vector_reserve(anivector* v, int new_capacity) {
     v->capacity = new_capacity;
 }
 
-void vector_push_back(anivector* v, const ppair& item) {
+void push_back(anivector* v, const ppair& item) {
     if (v->size == v->capacity) {
-        int new_cap = (v->capacity == 0) ? 4 : v->capacity * 2;
-        vector_reserve(v, new_cap);
+        int new_cap = (v->capacity == 0) ? 16 : v->capacity * 2;
+        reserve(v, new_cap);
     }
     v->data[v->size++] = item;
 }
 
-void vector_destroy(anivector* v) {
+void destroy(anivector* v) {
     delete[] v->data;
     v->data = nullptr;
-    v->size = v->capacity = 0;
+    v->size = 0;
+    v->capacity = 0;
 }
 
 int f(char c) {
@@ -80,23 +81,20 @@ void radix_sort(ppair a[], int n) {
             int b = f(a[i].key[p]);
             count[b]++;
         }
-        
-        int prefix[BUCKETS];
-        int sum = 0;
-        for (int b = 0; b < BUCKETS; ++b) {
-            prefix[b] = sum;
-            sum += count[b];
+
+        int prefix[BUCKETS] = {0};
+        prefix[0] = count[0];
+        for (int i = 1; i < BUCKETS; ++i) {
+            prefix[i] = prefix[i - 1] + count[i];
         }
-        
-        for (int i = 0; i < n; ++i) {
-            int b = f(a[i].key[p]);
-            int pos = prefix[b]++;
-            tmp[pos] = a[i];
+
+        for (int i = n - 1; i >= 0; --i) {
+            int idx = f(a[i].key[p]);
+            tmp[prefix[idx] - 1] = a[i];
+            prefix[idx]--;
         }
-        
         memcpy(a, tmp, n * sizeof(ppair));
     }
-    
     delete[] tmp;
 }
 
@@ -105,12 +103,12 @@ int main() {
     cin.tie(0); cout.tie(0);
 
     anivector arr;
-    vector_init(&arr);
+    anivector_init(&arr);
     char key[33] = {0};
     char value[65] = {0};
     ppair pp;
     while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
-        vector_push_back(&arr, pp);
+        push_back(&arr, pp);
     }
 
     radix_sort(arr.data, arr.size);
@@ -118,6 +116,8 @@ int main() {
     for(int i = 0; i < arr.size; ++i) {
         printf("%s\t%s\n", arr.data[i].key, arr.data[i].value);
     }
-    vector_destroy(&arr);
+
+    destroy(&arr);
+
     return 0;
 }
