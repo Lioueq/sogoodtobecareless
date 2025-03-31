@@ -6,50 +6,52 @@ using ll = long long;
 const ll SIZE = 100000;
 const int BUCKETS = 16;
 
-struct ppair {
+struct PairKV {
     char key[33];
     char value[65];
 };
 
-struct anivector {
-    ppair* data;
+struct Anivector {
+    PairKV* data;
     int size;
     int capacity;
 };
 
-void vector_init(anivector* v) {
+void AnivectorInit(Anivector* v) {
     v->data = nullptr;
     v->size = 0;
     v->capacity = 0;
 }
 
-void vector_reserve(anivector* v, int new_capacity) {
-    if (new_capacity <= v->capacity) return;
-    
-    ppair* new_data = new ppair[new_capacity];
+void Reserve(Anivector* v, int new_capacity) {
+    if (new_capacity <= v->capacity) { 
+        return; 
+    }
+    PairKV* new_data = new PairKV[new_capacity];
     if (v->data) {
-        memcpy(new_data, v->data, v->size * sizeof(ppair));
+        memcpy(new_data, v->data, v->size * sizeof(PairKV));
         delete[] v->data;
     }
     v->data = new_data;
     v->capacity = new_capacity;
 }
 
-void vector_push_back(anivector* v, const ppair& item) {
+void PushBack(Anivector* v, const PairKV& item) {
     if (v->size == v->capacity) {
-        int new_cap = (v->capacity == 0) ? 4 : v->capacity * 2;
-        vector_reserve(v, new_cap);
+        int new_cap = (v->capacity == 0) ? 16 : v->capacity * 2;
+        Reserve(v, new_cap);
     }
     v->data[v->size++] = item;
 }
 
-void vector_destroy(anivector* v) {
+void Destroy(Anivector* v) {
     delete[] v->data;
     v->data = nullptr;
-    v->size = v->capacity = 0;
+    v->size = 0;
+    v->capacity = 0;
 }
 
-int f(char c) {
+int HexToDecimal(char c) {
     switch(c) {
         case '0': return 0;
         case '1': return 1;
@@ -70,33 +72,26 @@ int f(char c) {
     }
 }
 
-void radix_sort(ppair a[], int n) {
-    ppair* tmp = new ppair[n];
-    
+void RadixSort(PairKV a[], int n) {
+    PairKV* tmp = new PairKV[n];
     for (int p = 31; p >= 0; --p) {
         int count[BUCKETS] = {0};
-        
         for (int i = 0; i < n; ++i) {
-            int b = f(a[i].key[p]);
+            int b = HexToDecimal(a[i].key[p]);
             count[b]++;
         }
-        
-        int prefix[BUCKETS];
-        int sum = 0;
-        for (int b = 0; b < BUCKETS; ++b) {
-            prefix[b] = sum;
-            sum += count[b];
+        int prefix[BUCKETS] = {0};
+        prefix[0] = count[0];
+        for (int i = 1; i < BUCKETS; ++i) {
+            prefix[i] = prefix[i - 1] + count[i];
         }
-        
-        for (int i = 0; i < n; ++i) {
-            int b = f(a[i].key[p]);
-            int pos = prefix[b]++;
-            tmp[pos] = a[i];
+        for (int i = n - 1; i >= 0; --i) {
+            int idx = HexToDecimal(a[i].key[p]);
+            tmp[prefix[idx] - 1] = a[i];
+            prefix[idx]--;
         }
-        
-        memcpy(a, tmp, n * sizeof(ppair));
+        memcpy(a, tmp, n * sizeof(PairKV));
     }
-    
     delete[] tmp;
 }
 
@@ -118,38 +113,35 @@ char random_hex_char(mt19937& gen) {
 int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
     ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
+    cin.tie(0);
+    cout.tie(0);
 
     random_device rd;
     mt19937 gen(rd());
 
-    anivector arr;
-    vector_init(&arr);
+    Anivector arr;
+    AnivectorInit(&arr);
     char key[33] = {0};
     char value[65] = {0};
-    int n = 10;
+    int n = 1000000;
     for (int i = 0; i < n; ++i) {
-        ppair pp;
+        PairKV pp;
         generate_random_hex_string(key, 32, gen);
         generate_random_hex_string(value, 64, gen);
         strcpy(pp.key, key);
         strcpy(pp.value, value);
-        vector_push_back(&arr, pp);
+        PushBack(&arr, pp);
     }
     // while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
     //     vector_push_back(&arr, pp);
     // }
 
-    radix_sort(arr.data, arr.size);
-
-    for(int i = 0; i < arr.size; ++i) {
-        printf("%s\t%s\n", arr.data[i].key, arr.data[i].value);
-    }
+    RadixSort(arr.data, arr.size);
 
     auto end_time = std::chrono::high_resolution_clock::now();  // Замер времени окончания
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
     std::cerr << "Execution time: " << duration.count() << " ms\n";  // Вывод времени
 
-    vector_destroy(&arr);
+    Destroy(&arr);
     return 0;
 }

@@ -1,41 +1,31 @@
-def radix_sort_lsd(nums):
-    max_num = max(nums) if nums else 0
-    max_bits = max_num.bit_length() if max_num > 0 else 1
-    
-    for bit in range(max_bits):
-        mask = 1 << bit  # Маска для текущего бита (0b1, 0b10, 0b100, ...)
-        bin_m = bin(mask)
-        buckets = [[], []]  # 0 и 1
-        
-        for num in nums:
-            bin_n = bin(num)
-            buckets[(num & mask) != 0].append(num)
-        
-        nums = buckets[0] + buckets[1]
-    
-    return nums
+import sys
 
+def f(c):
+    return int(c, 16)
 
-def radix_sort_grouped(nums, group_size=2):
-    max_num = max(nums) if nums else 0
-    max_bits = max_num.bit_length() if max_num > 0 else 1
-    
-    for shift in range(0, max_bits, group_size):
-        t = 1 << group_size
-        buckets = [[] for _ in range(t)]
-        mask = (1 << group_size) - 1
-        bin_m = bin(mask)
-        
-        for num in nums:
-            bucket_idx = (num >> shift) & mask
-            buckets[bucket_idx].append(num)
-        
-        nums = [num for bucket in buckets for num in bucket]
-    
-    return nums
+def radix_sort(a):
+    for p in range(15, -1, -1):
+        buckets = [0 for i in range(16)]
+        for i in a:
+            buckets[f(i[0][p])] += 1
+        prefix = [0 for i in range(16)]
+        prefix[0] = buckets[0]
+        for i in range(1, 16):
+            prefix[i] = prefix[i - 1] + buckets[i]
 
+        for i in range(len(a) - 1, -1, -1):
+            idx = f(a[i][0][p])
+            a[prefix[idx] - 1], a[i] = a[i], a[prefix[idx] - 1]
+            prefix[f(a[i][0][p])] -= 1
 
-a = list(map(int, ['15', '13', '63', '32']))
-a = radix_sort_lsd(a)
+    return a
 
-print(a)
+a = []
+for i in sys.stdin:
+    key, value = i.split()
+    a += [(key, value)]
+
+a = radix_sort(a)
+
+for i in a:
+    print(i[0], i[1])

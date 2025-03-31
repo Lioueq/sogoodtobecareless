@@ -3,7 +3,55 @@
 using namespace std;
 using ll = long long;
 
-int f(char c) {
+const ll SIZE = 100000;
+const int BUCKETS = 16;
+
+struct PairKV {
+    char key[33];
+    char value[65];
+};
+
+struct Anivector {
+    PairKV* data;
+    int size;
+    int capacity;
+};
+
+void AnivectorInit(Anivector* v) {
+    v->data = nullptr;
+    v->size = 0;
+    v->capacity = 0;
+}
+
+void Reserve(Anivector* v, int new_capacity) {
+    if (new_capacity <= v->capacity) { 
+        return; 
+    }
+    PairKV* new_data = new PairKV[new_capacity];
+    if (v->data) {
+        memcpy(new_data, v->data, v->size * sizeof(PairKV));
+        delete[] v->data;
+    }
+    v->data = new_data;
+    v->capacity = new_capacity;
+}
+
+void PushBack(Anivector* v, const PairKV& item) {
+    if (v->size == v->capacity) {
+        int new_cap = (v->capacity == 0) ? 16 : v->capacity * 2;
+        Reserve(v, new_cap);
+    }
+    v->data[v->size++] = item;
+}
+
+void Destroy(Anivector* v) {
+    delete[] v->data;
+    v->data = nullptr;
+    v->size = 0;
+    v->capacity = 0;
+}
+
+int HexToDecimal(char c) {
     switch(c) {
         case '0': return 0;
         case '1': return 1;
@@ -24,79 +72,48 @@ int f(char c) {
     }
 }
 
-// char* htb(string s) {
-//     char *ans;
-//     for (auto i: s) {
-//         strcat(ans, f(i));
-//     }
-//     return ans;
-// }
-
-void radix_sort(vector<vector<char>>& a) {
+void RadixSort(PairKV a[], int n) {
+    PairKV* tmp = new PairKV[n];
     for (int p = 31; p >= 0; --p) {
-        vector <vector<vector<char>>> buckets(16, vector<vector<char>>(0));
-        for (int i = 0; i < a.size(); ++i) {
-            buckets[f(a[i][p])].push_back(a[i]);
+        int count[BUCKETS] = {0};
+        for (int i = 0; i < n; ++i) {
+            int b = HexToDecimal(a[i].key[p]);
+            count[b]++;
         }
-        a.clear();
-        for (auto i: buckets) {
-            for (auto j: i) {
-                a.push_back(j);
-            }
+        int prefix[BUCKETS] = {0};
+        prefix[0] = count[0];
+        for (int i = 1; i < BUCKETS; ++i) {
+            prefix[i] = prefix[i - 1] + count[i];
         }
+        for (int i = n - 1; i >= 0; --i) {
+            int idx = HexToDecimal(a[i].key[p]);
+            tmp[prefix[idx] - 1] = a[i];
+            prefix[idx]--;
+        }
+        memcpy(a, tmp, n * sizeof(PairKV));
     }
-}
-
-void radix_sort_bitmask(vector<int>& a) {
-    for (int bit = 0; bit < 128; ++bit) {
-        int mask = 1 << bit;
-        vector<vector<int>> buckets(2, vector<int>(0));
-        for (auto num: a) {
-            buckets[(num & mask) != 0].push_back(num);
-        }
-        a.clear();
-        for (auto i: buckets) {
-            for (auto j: i) {
-                a.push_back(j);
-            } 
-        }
-    }
+    delete[] tmp;
 }
 
 int main() {
-    vector <vector<char>> a {{'a', '1'}, {'1', '0'}};
-    radix_sort(a);
-    for (auto i: a) {
-        for (auto j: i) {
-            cout << j;
-        }
-        cout << '\n';
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    Anivector arr;
+    AnivectorInit(&arr);
+    char key[33] = {0};
+    char value[65] = {0};
+    PairKV pp;
+    while(scanf("%s\t%s", pp.key, pp.value) != EOF) {
+        PushBack(&arr, pp);
     }
 
-    // ios::sync_with_stdio(false);
-    // cin.tie(0); cout.tie(0);
-    // vector <pair<uint64_t, string>> a;
-    // uint64_t key;
-    // string value;
-    // while (cin >> hex >> key) {
-    //     cin >> value;
-    //     pair<uint64_t, string> p {key, value};
-    //     a.push_back(p);
-    // }
-    // for (auto i: a) {
-    //     cout << i.first << ' ' << i.second << '\n';
-    // }
-    // radix_sort(a);
-    // cout << x;
-    // unsigned char a1 = 0b01001;
-    // unsigned char a2 = 0b00110;
-    // unsigned char a3 = a1 | a2;
-    // while (cin >> s) {
-    //     a.push_back(s);
-    // }
-    // vector <int> bn = dtb(14);
-    // for (auto i: bn) {
-    //     cout << i;
-    // }
+    RadixSort(arr.data, arr.size);
+
+    for(int i = 0; i < arr.size; ++i) {
+        printf("%s\t%s\n", arr.data[i].key, arr.data[i].value);
+    }
+    Destroy(&arr);
     return 0;
 }
