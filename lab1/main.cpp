@@ -49,6 +49,8 @@ void Destroy(Anivector* v) {
     v->data = nullptr;
     v->size = 0;
     v->capacity = 0;
+    v->size = 0;
+    v->capacity = 0;
 }
 
 int HexToDecimal(char c) {
