@@ -125,7 +125,7 @@ int main() {
     AnivectorInit(&arr);
     char key[33] = {0};
     char value[65] = {0};
-    int n = 1000000;
+    int n = 10000000;
     for (int i = 0; i < n; ++i) {
         PairKV pp;
         generate_random_hex_string(key, 32, gen);
