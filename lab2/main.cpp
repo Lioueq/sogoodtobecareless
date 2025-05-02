@@ -67,6 +67,48 @@ public:
         return res ? res->value : -1;
     }
 
+    bool SaveToFile(const char* filename) {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) return false;
+        try {
+            SaveNode(out, root);
+        } catch (...) {
+            return false;
+        }
+        return true;
+    }
+
+    bool LoadFromFile(const char* filename, std::string& errorMsg) {
+        std::ifstream in(filename, std::ios::binary);
+        if (!in) {
+            errorMsg = std::string("ERROR: ") + std::strerror(errno);
+            return false;
+        }
+        try {
+            Node* newRoot = LoadNode(in);
+            if (!in.eof() && in.fail()) {
+                errorMsg = "ERROR: File read error";
+                FreeNode(newRoot);
+                return false;
+            }
+            char extra;
+            if (in.read(&extra, 1)) {
+                errorMsg = "ERROR: File format mismatch";
+                FreeNode(newRoot);
+                return false;
+            }
+            FreeNode(root);
+            root = newRoot;
+        } catch (const std::exception& e) {
+            errorMsg = std::string("ERROR: ") + e.what();
+            return false;
+        } catch (...) {
+            errorMsg = "ERROR: Unknown error";
+            return false;
+        }
+        return true;
+    }
+
 private:
     Node* root;
 
@@ -212,18 +254,55 @@ private:
             Inorder(root->right);
         }
     }
+
+    void SaveNode(std::ofstream& out, Node* node) {
+        if (!node) {
+            char marker = 0;
+            out.write(&marker, 1);
+            return;
+        }
+        char marker = 1;
+        out.write(&marker, 1);
+        out.write(node->key, 257);
+        out.write(reinterpret_cast<const char*>(&node->value), sizeof(node->value));
+        SaveNode(out, node->left);
+        SaveNode(out, node->right);
+    }
+
+    void FreeNode(Node* node) {
+        if (!node) return;
+        FreeNode(node->left);
+        FreeNode(node->right);
+        delete node;
+    }
+
+    Node* LoadNode(std::ifstream& in) {
+        char marker;
+        if (!in.read(&marker, 1)) throw std::runtime_error("File format mismatch");
+        if (marker == 0) return nullptr;
+        if (marker != 1) throw std::runtime_error("File format mismatch");
+        char key[257];
+        uint64_t value;
+        if (!in.read(key, 257)) throw std::runtime_error("File format mismatch");
+        if (!in.read(reinterpret_cast<char*>(&value), sizeof(value))) throw std::runtime_error("File format mismatch");
+        Node* node = new Node(key, value);
+        node->left = LoadNode(in);
+        node->right = LoadNode(in);
+        updateHeight(node);
+        return node;
+    }
 };
 
 int main() {
     AVL_Tree tree;
     std::ifstream in("input.txt");
-    char line[1024], key[257];
+    char line[290], key[257];
     char op;
     uint64_t value;
     while (in.getline(line, sizeof(line))) {
         std::istringstream iss(line);
         if (line[0] == '+' || line[0] == '-' || line[0] == '!') {
-            iss >> op;
+            iss >> op;  
             if (op == '+') {
                 iss >> key >> value;
                 tree.Insert(key, value);
@@ -231,6 +310,34 @@ int main() {
             else if (op == '-') {
                 iss >> key;
                 tree.Remove(key);
+            }
+            else if (op == '!') {
+                std::string cmd;
+                iss >> cmd;
+                if (cmd == "Save") {
+                    std::string path;
+                    iss >> path;
+                    if (path.empty()) {
+                        std::cout << "ERROR: No file path provided" << std::endl;
+                    } else if (tree.SaveToFile(path.c_str())) {
+                        std::cout << "OK" << std::endl;
+                    } else {
+                        std::cout << "ERROR: Failed to save file" << std::endl;
+                    }
+                } else if (cmd == "Load") {
+                    std::string path;
+                    iss >> path;
+                    if (path.empty()) {
+                        std::cout << "ERROR: No file path provided" << std::endl;
+                    } else {
+                        std::string errorMsg;
+                        if (tree.LoadFromFile(path.c_str(), errorMsg)) {
+                            std::cout << "OK" << std::endl;
+                        } else {
+                            std::cout << errorMsg << std::endl;
+                        }
+                    }
+                }
             }
         }
         else {
