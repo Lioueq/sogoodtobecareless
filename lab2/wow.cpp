@@ -65,10 +65,5 @@ class AVL_Tree {
 
 int main() {
     AVL_Tree root;
-    root.Insert("d", 1);
-    root.Insert("b", 2);
-    root.Insert("c", 3);
-    root.Insert("d", 4);
-    root.InorderPrint();
     return 0;
 }
