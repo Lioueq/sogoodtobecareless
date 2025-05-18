@@ -14,9 +14,8 @@ struct Node {
     int height;
     Node* left;
     Node* right;
-    Node(const char* key, uint64_t value)
-        : value(value), height(1), left(nullptr), right(nullptr) {
-        strncpy(this->key, key, 256);
+    Node(const char* key_, uint64_t value) : value(value), height(1), left(nullptr), right(nullptr) {
+        strncpy(this->key, key_, 256);
         this->key[256] = '\0';
     }
 };
@@ -26,7 +25,8 @@ public:
     AVL_Tree() : root(nullptr) {}
 
     void Insert(const char* key, uint64_t el) {
-        if (Find(key) != -1) {
+        uint64_t found = Find(key);
+        if (found != (uint64_t)-1) {
             std::cout << "Exist\n";
             return;
         }
@@ -37,7 +37,8 @@ public:
     }
 
     void Remove(const char* key) {
-        if (Find(key) == -1) {
+        uint64_t found = Find(key);
+        if (found == (uint64_t)-1) {
             std::cout << "NoSuchWord\n";
             return;
         }
@@ -51,7 +52,7 @@ public:
         Inorder(root);
     }
 
-    uint64_t Find(const char* key, int mode=0) {
+    uint64_t Find(const char* key, int mode = 0) {
         char lower_key[257];
         to_lower(key, lower_key);
         Node* res = RecursiveFind(root, lower_key);
@@ -62,48 +63,59 @@ public:
             else {
                 std::cout << "NoSuchWord\n";
             }
+
             return 0;
         }
-        return res ? res->value : -1;
+        if (res == nullptr) {
+            return (uint64_t)-1;
+        }
+        else {
+            return res->value;
+        }
     }
 
     bool SaveToFile(const char* filename) {
         std::ofstream out(filename, std::ios::binary);
-        if (!out) return false;
+        if (!out) {
+            return false;
+        }
         try {
             SaveNode(out, root);
-        } catch (...) {
+        }
+        catch (...) {
             return false;
         }
         return true;
     }
 
-    bool LoadFromFile(const char* filename, std::string& errorMsg) {
+    bool LoadFromFile(const char* filename, char* errorMsg, size_t errSize) {
         std::ifstream in(filename, std::ios::binary);
         if (!in) {
-            errorMsg = std::string("ERROR: ") + std::strerror(errno);
+            snprintf(errorMsg, errSize, "ERROR: %s", std::strerror(errno));
             return false;
         }
         try {
             Node* newRoot = LoadNode(in);
             if (!in.eof() && in.fail()) {
-                errorMsg = "ERROR: File read error";
+                strncpy(errorMsg, "ERROR: File read error", errSize);
                 FreeNode(newRoot);
                 return false;
             }
             char extra;
             if (in.read(&extra, 1)) {
-                errorMsg = "ERROR: File format mismatch";
+                strncpy(errorMsg, "ERROR: File format mismatch", errSize);
                 FreeNode(newRoot);
                 return false;
             }
             FreeNode(root);
             root = newRoot;
-        } catch (const std::exception& e) {
-            errorMsg = std::string("ERROR: ") + e.what();
+        }
+        catch (const std::exception& e) {
+            snprintf(errorMsg, errSize, "ERROR: %s", e.what());
             return false;
-        } catch (...) {
-            errorMsg = "ERROR: Unknown error";
+        }
+        catch (...) {
+            strncpy(errorMsg, "ERROR: Unknown error", errSize);
             return false;
         }
         return true;
@@ -111,20 +123,34 @@ public:
 
 private:
     Node* root;
-
     int getHeight(Node* n) {
-        return n ? n->height : 0;
+        if (n == nullptr) {
+            return 0;
+        }
+        else {
+            return n->height;
+        }
     }
 
     void updateHeight(Node* n) {
-        n->height = 1 + std::max(getHeight(n->left), getHeight(n->right));
+        if (n != nullptr) {
+            int hl = getHeight(n->left);
+            int hr = getHeight(n->right);
+            n->height = 1 + std::max(hl, hr);
+        }
     }
 
     int getBalance(Node* n) {
-        return n ? getHeight(n->left) - getHeight(n->right) : 0;
+        if (n == nullptr) {
+            return 0;
+        }
+        return getHeight(n->left) - getHeight(n->right);
     }
 
     Node* rotateLeft(Node* x) {
+        if (x == nullptr) {
+            return nullptr;
+        }
         Node* y = x->right;
         x->right = y->left;
         y->left = x;
@@ -134,6 +160,9 @@ private:
     }
 
     Node* rotateRight(Node* y) {
+        if (y == nullptr) {
+            return nullptr;
+        }
         Node* x = y->left;
         y->left = x->right;
         x->right = y;
@@ -143,23 +172,29 @@ private:
     }
 
     Node* bigRotateLeft(Node* n) {
+        if (n == nullptr) {
+            return nullptr;
+        }
         n->right = rotateRight(n->right);
         return rotateLeft(n);
     }
 
     Node* bigRotateRight(Node* n) {
+        if (n == nullptr) {
+            return nullptr;
+        }
         n->left = rotateLeft(n->left);
         return rotateRight(n);
     }
 
     Node* RecursiveInsert(Node* node, const char* key, uint64_t el) {
-        if (!node) {
+        if (node == nullptr) {
             return new Node(key, el);
         }
         int cmp = strcmp(key, node->key);
         if (cmp > 0) {
             node->right = RecursiveInsert(node->right, key, el);
-        } 
+        }
         else {
             node->left = RecursiveInsert(node->left, key, el);
         }
@@ -168,7 +203,7 @@ private:
         if (bf > 1) {
             if (strcmp(key, node->left->key) <= 0) {
                 return rotateRight(node);
-            } 
+            }
             else {
                 return bigRotateRight(node);
             }
@@ -176,7 +211,7 @@ private:
         else if (bf < -1) {
             if (strcmp(key, node->right->key) > 0) {
                 return rotateLeft(node);
-            } 
+            }
             else {
                 return bigRotateLeft(node);
             }
@@ -185,39 +220,43 @@ private:
     }
 
     Node* RecursiveFind(Node* node, const char* key) {
-        if (!node) {
+        if (node == nullptr) {
             return nullptr;
         }
         int cmp = strcmp(key, node->key);
         if (cmp == 0) {
             return node;
         }
-        if (cmp < 0) {
+        else if (cmp < 0) {
             return RecursiveFind(node->left, key);
         }
-        return RecursiveFind(node->right, key);
+        else {
+            return RecursiveFind(node->right, key);
+        }
     }
 
     Node* RecursiveRemove(Node* node, const char* key) {
-        if (!node) {
+        if (node == nullptr) {
             return nullptr;
         }
         int cmp = strcmp(key, node->key);
         if (cmp < 0) {
             node->left = RecursiveRemove(node->left, key);
-        } 
+        }
         else if (cmp > 0) {
             node->right = RecursiveRemove(node->right, key);
-        } 
+        }
         else {
-            if (!node->left || !node->right) {
-                Node* temp = node->left ? node->left : node->right;
+            if (node->left == nullptr || node->right == nullptr) {
+                Node* temp = (node->left != nullptr) ? node->left : node->right;
                 delete node;
                 return temp;
-            } 
+            }
             else {
                 Node* minLarger = node->right;
-                while (minLarger->left) minLarger = minLarger->left;
+                while (minLarger->left != nullptr) {
+                    minLarger = minLarger->left;
+                }
                 strncpy(node->key, minLarger->key, 256);
                 node->key[256] = '\0';
                 node->value = minLarger->value;
@@ -234,7 +273,7 @@ private:
                 return bigRotateRight(node);
             }
         }
-        if (bf < -1) {
+        else if (bf < -1) {
             if (getBalance(node->right) <= 0) {
                 return rotateLeft(node);
             }
@@ -246,17 +285,16 @@ private:
     }
 
     void Inorder(Node* root) {
-        if (root->left != nullptr) {
-            Inorder(root->left);
+        if (root == nullptr) {
+            return;
         }
+        Inorder(root->left);
         std::cout << root->value << ' ';
-        if (root->right != nullptr) {
-            Inorder(root->right);
-        }
+        Inorder(root->right);
     }
 
     void SaveNode(std::ofstream& out, Node* node) {
-        if (!node) {
+        if (node == nullptr) {
             char marker = 0;
             out.write(&marker, 1);
             return;
@@ -270,7 +308,9 @@ private:
     }
 
     void FreeNode(Node* node) {
-        if (!node) return;
+        if (node == nullptr) {
+            return;
+        }
         FreeNode(node->left);
         FreeNode(node->right);
         delete node;
@@ -278,13 +318,23 @@ private:
 
     Node* LoadNode(std::ifstream& in) {
         char marker;
-        if (!in.read(&marker, 1)) throw std::runtime_error("File format mismatch");
-        if (marker == 0) return nullptr;
-        if (marker != 1) throw std::runtime_error("File format mismatch");
+        if (!in.read(&marker, 1)) {
+            throw std::runtime_error("File format mismatch");
+        }
+        if (marker == 0) {
+            return nullptr;
+        }
+        else if (marker != 1) {
+            throw std::runtime_error("File format mismatch");
+        }
         char key[257];
         uint64_t value;
-        if (!in.read(key, 257)) throw std::runtime_error("File format mismatch");
-        if (!in.read(reinterpret_cast<char*>(&value), sizeof(value))) throw std::runtime_error("File format mismatch");
+        if (!in.read(key, 257)) {
+            throw std::runtime_error("File format mismatch");
+        }
+        if (!in.read(reinterpret_cast<char*>(&value), sizeof(value))) {
+            throw std::runtime_error("File format mismatch");
+        }
         Node* node = new Node(key, value);
         node->left = LoadNode(in);
         node->right = LoadNode(in);
@@ -296,13 +346,17 @@ private:
 int main() {
     AVL_Tree tree;
     std::ifstream in("input.txt");
-    char line[290], key[257];
+    char line[290];
+    char key[257];
+    char cmd[10];
+    char path[260];
     char op;
     uint64_t value;
+    char errorMsg[260];
     while (in.getline(line, sizeof(line))) {
         std::istringstream iss(line);
         if (line[0] == '+' || line[0] == '-' || line[0] == '!') {
-            iss >> op;  
+            iss >> op;
             if (op == '+') {
                 iss >> key >> value;
                 tree.Insert(key, value);
@@ -312,28 +366,29 @@ int main() {
                 tree.Remove(key);
             }
             else if (op == '!') {
-                std::string cmd;
                 iss >> cmd;
-                if (cmd == "Save") {
-                    std::string path;
+                if (strcmp(cmd, "Save") == 0) {
                     iss >> path;
-                    if (path.empty()) {
+                    if (path[0] == '\0') {
                         std::cout << "ERROR: No file path provided" << std::endl;
-                    } else if (tree.SaveToFile(path.c_str())) {
+                    }
+                    else if (tree.SaveToFile(path)) {
                         std::cout << "OK" << std::endl;
-                    } else {
+                    }
+                    else {
                         std::cout << "ERROR: Failed to save file" << std::endl;
                     }
-                } else if (cmd == "Load") {
-                    std::string path;
+                }
+                else if (strcmp(cmd, "Load") == 0) {
                     iss >> path;
-                    if (path.empty()) {
+                    if (path[0] == '\0') {
                         std::cout << "ERROR: No file path provided" << std::endl;
-                    } else {
-                        std::string errorMsg;
-                        if (tree.LoadFromFile(path.c_str(), errorMsg)) {
+                    }
+                    else {
+                        if (tree.LoadFromFile(path, errorMsg, sizeof(errorMsg))) {
                             std::cout << "OK" << std::endl;
-                        } else {
+                        }
+                        else {
                             std::cout << errorMsg << std::endl;
                         }
                     }
