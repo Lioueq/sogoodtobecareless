@@ -29,25 +29,25 @@ public:
     }
 
     void Insert(const char* key, uint64_t el) {
-        uint64_t found = Find(key);
-        if (found != (uint64_t)-1) {
+        char lower_key[257];
+        to_lower(key, lower_key);
+
+        if (FindLower(lower_key) != nullptr) {
             // std::cout << "Exist\n";
             return;
         }
-        char lower_key[257];
-        to_lower(key, lower_key);
+
         root = RecursiveInsert(root, lower_key, el);
         // std::cout << "OK\n";
     }
 
     void Remove(const char* key) {
-        uint64_t found = Find(key);
-        if (found == (uint64_t)-1) {
+        char lower_key[257];
+        to_lower(key, lower_key);
+        if (FindLower(lower_key) == nullptr) {
             // std::cout << "NoSuchWord\n";
             return;
         }
-        char lower_key[257];
-        to_lower(key, lower_key);
         root = RecursiveRemove(root, lower_key);
         // std::cout << "OK\n";
     }
@@ -59,7 +59,7 @@ public:
     uint64_t Find(const char* key, int mode = 0) {
         char lower_key[257];
         to_lower(key, lower_key);
-        Node* res = RecursiveFind(root, lower_key);
+        Node* res = FindLower(lower_key);
         if (mode != 0) {
             if (res != nullptr) {
                 // std::cout << "OK: " << res->value << '\n';
@@ -134,6 +134,10 @@ private:
         else {
             return n->height;
         }
+    }
+
+    Node* FindLower(const char* lower_key) {
+        return RecursiveFind(root, lower_key);
     }
 
     void updateHeight(Node* n) {
