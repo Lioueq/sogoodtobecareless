@@ -27,25 +27,25 @@ public:
     void Insert(const char* key, uint64_t el) {
         uint64_t found = Find(key);
         if (found != (uint64_t)-1) {
-            std::cout << "Exist\n";
+            // std::cout << "Exist\n";
             return;
         }
         char lower_key[257];
         to_lower(key, lower_key);
         root = RecursiveInsert(root, lower_key, el);
-        std::cout << "OK\n";
+        // std::cout << "OK\n";
     }
 
     void Remove(const char* key) {
         uint64_t found = Find(key);
         if (found == (uint64_t)-1) {
-            std::cout << "NoSuchWord\n";
+            // std::cout << "NoSuchWord\n";
             return;
         }
         char lower_key[257];
         to_lower(key, lower_key);
         root = RecursiveRemove(root, lower_key);
-        std::cout << "OK\n";
+        // std::cout << "OK\n";
     }
 
     void InorderPrint() {
@@ -58,10 +58,12 @@ public:
         Node* res = RecursiveFind(root, lower_key);
         if (mode != 0) {
             if (res != nullptr) {
-                std::cout << "OK: " << res->value << '\n';
+                ;
+                // std::cout << "OK: " << res->value << '\n';
             }
             else {
-                std::cout << "NoSuchWord\n";
+                // std::cout << "NoSuchWord\n";
+                ;
             }
 
             return 0;
@@ -345,7 +347,8 @@ private:
 
 int main() {
     AVL_Tree tree;
-    std::ifstream in("input.txt");
+    std::ifstream in("test.txt");
+    auto start = std::chrono::high_resolution_clock::now();
     char line[290];
     char key[257];
     char cmd[10];
@@ -400,5 +403,8 @@ int main() {
             tree.Find(key, 1);
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();       
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Elapsed time: " << elapsed.count() << " seconds\n";
     return 0;
 }

@@ -1,0 +1,326 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 35.89      5.19     5.19 283768942     0.00     0.00  AVL_Tree::getHeight(Node*)
+ 32.30      9.87     4.67 10000000     0.00     0.00  AVL_Tree::RecursiveFind(Node*, char const*)
+ 16.60     12.27     2.40 13332840     0.00     0.00  to_lower(char const*, char*)
+  4.08     12.86     0.59  3316889     0.00     0.00  AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long)
+  2.28     13.19     0.33 73254678     0.00     0.00  AVL_Tree::updateHeight(Node*)
+  1.80     13.45     0.26                             _init
+  1.24     13.63     0.18 73254678     0.00     0.00  int const& std::max<int>(int const&, int const&)
+  1.18     13.80     0.17                             main
+  1.11     13.96     0.16 10000000     0.00     0.00  AVL_Tree::Find(char const*, int)
+  0.90     14.09     0.13 68629793     0.00     0.00  AVL_Tree::getBalance(Node*)
+  0.52     14.17     0.08  3333268     0.00     0.00  AVL_Tree::Insert(char const*, unsigned long)
+  0.48     14.24     0.07  3332799     0.00     0.00  AVL_Tree::Remove(char const*)
+  0.35     14.29     0.05 10000000     0.00     0.00  void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)
+  0.35     14.34     0.05 10000000     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&)
+  0.21     14.37     0.03                             AVL_Tree::LoadFromFile(char const*, char*, unsigned long)
+  0.14     14.39     0.02 10000000     0.00     0.00  std::char_traits<char>::length(char const*)
+  0.14     14.41     0.02 10000000     0.00     0.00  std::__new_allocator<char>::~__new_allocator()
+  0.14     14.43     0.02 10000000     0.00     0.00  std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char*)
+  0.14     14.45     0.02                             std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider::~_Alloc_hider()
+  0.07     14.46     0.01 10000000     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::~_Guard()
+  0.07     14.47     0.01   386069     0.00     0.00  AVL_Tree::bigRotateRight(Node*)
+  0.07     14.48     0.01                             __gnu_cxx::char_traits<char>::eq(char const&, char const&)
+  0.03     14.48     0.01        1     5.00     5.00  AVL_Tree::AVL_Tree()
+  0.00     14.48     0.00 10000000     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::_Guard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)
+  0.00     14.48     0.00  3316889     0.00     0.00  Node::Node(char const*, unsigned long)
+  0.00     14.48     0.00  1156864     0.00     0.00  AVL_Tree::rotateLeft(Node*)
+  0.00     14.48     0.00  1156432     0.00     0.00  AVL_Tree::rotateRight(Node*)
+  0.00     14.48     0.00   384285     0.00     0.00  AVL_Tree::bigRotateLeft(Node*)
+  0.00     14.48     0.00    15951     0.00     0.00  AVL_Tree::RecursiveRemove(Node*, char const*)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2025 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.07% of 14.48 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     97.8    0.17   13.99                 main [1]
+                0.08    9.22 3333268/3333268     AVL_Tree::Insert(char const*, unsigned long) [2]
+                0.07    2.24 3332799/3332799     AVL_Tree::Remove(char const*) [10]
+                0.05    2.16 3333933/10000000     AVL_Tree::Find(char const*, int) [3]
+                0.05    0.08 10000000/10000000     std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [13]
+                0.02    0.00 10000000/10000000     std::__new_allocator<char>::~__new_allocator() [22]
+                0.02    0.00 10000000/10000000     std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char*) [23]
+                0.01    0.00       1/1           AVL_Tree::AVL_Tree() [27]
+-----------------------------------------------
+                0.08    9.22 3333268/3333268     main [1]
+[2]     64.2    0.08    9.22 3333268         AVL_Tree::Insert(char const*, unsigned long) [2]
+                0.59    5.82 3316889/3316889     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+                0.05    2.16 3333268/10000000     AVL_Tree::Find(char const*, int) [3]
+                0.60    0.00 3316889/13332840     to_lower(char const*, char*) [9]
+-----------------------------------------------
+                0.05    2.16 3332799/10000000     AVL_Tree::Remove(char const*) [10]
+                0.05    2.16 3333268/10000000     AVL_Tree::Insert(char const*, unsigned long) [2]
+                0.05    2.16 3333933/10000000     main [1]
+[3]     45.8    0.16    6.47 10000000         AVL_Tree::Find(char const*, int) [3]
+                4.67    0.00 10000000/10000000     AVL_Tree::RecursiveFind(Node*, char const*) [6]
+                1.80    0.00 10000000/13332840     to_lower(char const*, char*) [9]
+-----------------------------------------------
+                             68309704             AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+                0.59    5.82 3316889/3316889     AVL_Tree::Insert(char const*, unsigned long) [2]
+[4]     44.3    0.59    5.82 3316889+68309704 AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+                0.31    2.67 68309704/73254678     AVL_Tree::updateHeight(Node*) [7]
+                0.13    2.50 68309704/68629793     AVL_Tree::getBalance(Node*) [8]
+                0.01    0.07  385718/386069      AVL_Tree::bigRotateRight(Node*) [16]
+                0.00    0.07  384014/384285      AVL_Tree::bigRotateLeft(Node*) [17]
+                0.00    0.03  385992/1156864     AVL_Tree::rotateLeft(Node*) [14]
+                0.00    0.03  385511/1156432     AVL_Tree::rotateRight(Node*) [15]
+                0.00    0.00 3316889/3316889     Node::Node(char const*, unsigned long) [32]
+                             68309704             AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+-----------------------------------------------
+                2.51    0.00 137259586/283768942     AVL_Tree::getBalance(Node*) [8]
+                2.68    0.00 146509356/283768942     AVL_Tree::updateHeight(Node*) [7]
+[5]     35.9    5.19    0.00 283768942         AVL_Tree::getHeight(Node*) [5]
+-----------------------------------------------
+                             205886607             AVL_Tree::RecursiveFind(Node*, char const*) [6]
+                4.67    0.00 10000000/10000000     AVL_Tree::Find(char const*, int) [3]
+[6]     32.3    4.67    0.00 10000000+205886607 AVL_Tree::RecursiveFind(Node*, char const*) [6]
+                             205886607             AVL_Tree::RecursiveFind(Node*, char const*) [6]
+-----------------------------------------------
+                0.00    0.01  318382/73254678     AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.01    0.09 2312864/73254678     AVL_Tree::rotateRight(Node*) [15]
+                0.01    0.09 2313728/73254678     AVL_Tree::rotateLeft(Node*) [14]
+                0.31    2.67 68309704/73254678     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+[7]     22.0    0.33    2.86 73254678         AVL_Tree::updateHeight(Node*) [7]
+                2.68    0.00 146509356/283768942     AVL_Tree::getHeight(Node*) [5]
+                0.18    0.00 73254678/73254678     int const& std::max<int>(int const&, int const&) [12]
+-----------------------------------------------
+                0.00    0.01  320089/68629793     AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.13    2.50 68309704/68629793     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+[8]     18.2    0.13    2.51 68629793         AVL_Tree::getBalance(Node*) [8]
+                2.51    0.00 137259586/283768942     AVL_Tree::getHeight(Node*) [5]
+-----------------------------------------------
+                0.00    0.00   15951/13332840     AVL_Tree::Remove(char const*) [10]
+                0.60    0.00 3316889/13332840     AVL_Tree::Insert(char const*, unsigned long) [2]
+                1.80    0.00 10000000/13332840     AVL_Tree::Find(char const*, int) [3]
+[9]     16.6    2.40    0.00 13332840         to_lower(char const*, char*) [9]
+-----------------------------------------------
+                0.07    2.24 3332799/3332799     main [1]
+[10]    16.0    0.07    2.24 3332799         AVL_Tree::Remove(char const*) [10]
+                0.05    2.16 3332799/10000000     AVL_Tree::Find(char const*, int) [3]
+                0.00    0.03   15951/15951       AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.00   15951/13332840     to_lower(char const*, char*) [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[11]     1.8    0.26    0.00                 _init [11]
+-----------------------------------------------
+                0.18    0.00 73254678/73254678     AVL_Tree::updateHeight(Node*) [7]
+[12]     1.2    0.18    0.00 73254678         int const& std::max<int>(int const&, int const&) [12]
+-----------------------------------------------
+                0.05    0.08 10000000/10000000     main [1]
+[13]     0.9    0.05    0.08 10000000         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [13]
+                0.05    0.01 10000000/10000000     void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [18]
+                0.02    0.00 10000000/10000000     std::char_traits<char>::length(char const*) [21]
+-----------------------------------------------
+                0.00    0.00     518/1156864     AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.03  384285/1156864     AVL_Tree::bigRotateLeft(Node*) [17]
+                0.00    0.03  385992/1156864     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+                0.00    0.03  386069/1156864     AVL_Tree::bigRotateRight(Node*) [16]
+[14]     0.7    0.00    0.10 1156864         AVL_Tree::rotateLeft(Node*) [14]
+                0.01    0.09 2313728/73254678     AVL_Tree::updateHeight(Node*) [7]
+-----------------------------------------------
+                0.00    0.00     567/1156432     AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.03  384285/1156432     AVL_Tree::bigRotateLeft(Node*) [17]
+                0.00    0.03  385511/1156432     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+                0.00    0.03  386069/1156432     AVL_Tree::bigRotateRight(Node*) [16]
+[15]     0.7    0.00    0.10 1156432         AVL_Tree::rotateRight(Node*) [15]
+                0.01    0.09 2312864/73254678     AVL_Tree::updateHeight(Node*) [7]
+-----------------------------------------------
+                0.00    0.00     351/386069      AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.01    0.07  385718/386069      AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+[16]     0.5    0.01    0.07  386069         AVL_Tree::bigRotateRight(Node*) [16]
+                0.00    0.03  386069/1156432     AVL_Tree::rotateRight(Node*) [15]
+                0.00    0.03  386069/1156864     AVL_Tree::rotateLeft(Node*) [14]
+-----------------------------------------------
+                0.00    0.00     271/384285      AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.07  384014/384285      AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+[17]     0.5    0.00    0.07  384285         AVL_Tree::bigRotateLeft(Node*) [17]
+                0.00    0.03  384285/1156432     AVL_Tree::rotateRight(Node*) [15]
+                0.00    0.03  384285/1156864     AVL_Tree::rotateLeft(Node*) [14]
+-----------------------------------------------
+                0.05    0.01 10000000/10000000     std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [13]
+[18]     0.4    0.05    0.01 10000000         void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [18]
+                0.01    0.00 10000000/10000000     std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::~_Guard() [25]
+                0.00    0.00 10000000/10000000     std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::_Guard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*) [31]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     0.2    0.03    0.00                 AVL_Tree::LoadFromFile(char const*, char*, unsigned long) [19]
+-----------------------------------------------
+                              318382             AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.03   15951/15951       AVL_Tree::Remove(char const*) [10]
+[20]     0.2    0.00    0.03   15951+318382  AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+                0.00    0.01  318382/73254678     AVL_Tree::updateHeight(Node*) [7]
+                0.00    0.01  320089/68629793     AVL_Tree::getBalance(Node*) [8]
+                0.00    0.00     351/386069      AVL_Tree::bigRotateRight(Node*) [16]
+                0.00    0.00     567/1156432     AVL_Tree::rotateRight(Node*) [15]
+                0.00    0.00     271/384285      AVL_Tree::bigRotateLeft(Node*) [17]
+                0.00    0.00     518/1156864     AVL_Tree::rotateLeft(Node*) [14]
+                              318382             AVL_Tree::RecursiveRemove(Node*, char const*) [20]
+-----------------------------------------------
+                0.02    0.00 10000000/10000000     std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [13]
+[21]     0.1    0.02    0.00 10000000         std::char_traits<char>::length(char const*) [21]
+-----------------------------------------------
+                0.02    0.00 10000000/10000000     main [1]
+[22]     0.1    0.02    0.00 10000000         std::__new_allocator<char>::~__new_allocator() [22]
+-----------------------------------------------
+                0.02    0.00 10000000/10000000     main [1]
+[23]     0.1    0.02    0.00 10000000         std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char*) [23]
+-----------------------------------------------
+                                                 <spontaneous>
+[24]     0.1    0.02    0.00                 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider::~_Alloc_hider() [24]
+-----------------------------------------------
+                0.01    0.00 10000000/10000000     void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [18]
+[25]     0.1    0.01    0.00 10000000         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::~_Guard() [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     0.1    0.01    0.00                 __gnu_cxx::char_traits<char>::eq(char const&, char const&) [26]
+-----------------------------------------------
+                0.01    0.00       1/1           main [1]
+[27]     0.0    0.01    0.00       1         AVL_Tree::AVL_Tree() [27]
+-----------------------------------------------
+                0.00    0.00 10000000/10000000     void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [18]
+[31]     0.0    0.00    0.00 10000000         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::_Guard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*) [31]
+-----------------------------------------------
+                0.00    0.00 3316889/3316889     AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [4]
+[32]     0.0    0.00    0.00 3316889         Node::Node(char const*, unsigned long) [32]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2025 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+   [9] to_lower(char const*, char*) [4] AVL_Tree::RecursiveInsert(Node*, char const*, unsigned long) [24] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider::~_Alloc_hider()
+  [32] Node::Node(char const*, unsigned long) [20] AVL_Tree::RecursiveRemove(Node*, char const*) [18] void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)
+   [8] AVL_Tree::getBalance(Node*) [3] AVL_Tree::Find(char const*, int) [13] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&)
+  [14] AVL_Tree::rotateLeft(Node*) [2] AVL_Tree::Insert(char const*, unsigned long) [12] int const& std::max<int>(int const&, int const&)
+  [15] AVL_Tree::rotateRight(Node*) [10] AVL_Tree::Remove(char const*) [23] std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char*)
+  [19] AVL_Tree::LoadFromFile(char const*, char*, unsigned long) [5] AVL_Tree::getHeight(Node*) [31] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::_Guard(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*)
+   [7] AVL_Tree::updateHeight(Node*) [27] AVL_Tree::AVL_Tree() [25] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)::_Guard::~_Guard()
+   [6] AVL_Tree::RecursiveFind(Node*, char const*) [26] __gnu_cxx::char_traits<char>::eq(char const&, char const&) [11] _init
+  [17] AVL_Tree::bigRotateLeft(Node*) [21] std::char_traits<char>::length(char const*) [1] main
+  [16] AVL_Tree::bigRotateRight(Node*) [22] std::__new_allocator<char>::~__new_allocator()
