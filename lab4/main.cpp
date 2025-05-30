@@ -57,7 +57,7 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    ifstream in("input.txt");
+    ifstream in("warandpeace.txt");
     string line;
     getline(in, line);
     vector<string> pat = splitWords(line);
@@ -66,12 +66,12 @@ int main() {
         return 0;
     }
 
-    unordered_map<string, int> word2id;
+    unordered_map<string, int> wtid;
     int nextId = 0;
     auto getId = [&](const string &w) {
-        auto it = word2id.find(w);
-        if (it != word2id.end()) return it->second;
-        return word2id.emplace(w, nextId++).first->second;
+        auto it = wtid.find(w);
+        if (it != wtid.end()) return it->second;
+        return wtid.emplace(w, nextId++).first->second;
     };
 
     vector<int> patId(m);
@@ -80,7 +80,9 @@ int main() {
     }
 
     vector<int> textId;
+    textId.reserve(10000000);
     vector<pair<int,int>> pos;
+    pos.reserve(10000000);
     int lineN = 0;
     while (getline(in, line)) {
         lineN++;
@@ -97,8 +99,9 @@ int main() {
 
     auto badChar = buildBadCharInt(patId);
     auto goodSuffix = buildGoodSuffixInt(patId);
-
+    auto start = std::chrono::high_resolution_clock::now();
     vector<pair<int,int>> result;
+    result.reserve(10000000);
     int s = 0;
     while (s <= n - m) {
         int j = m - 1;
@@ -126,5 +129,8 @@ int main() {
     for (auto &p : result) {
         out << p.first << "," << p.second << "\n";
     }
+    auto end = std::chrono::high_resolution_clock::now();       
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Elapsed time: " << elapsed.count() << " seconds\n";
     return 0;
 }

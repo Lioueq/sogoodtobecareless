@@ -23,7 +23,7 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    ifstream in("input.txt");
+    ifstream in("warandpeace.txt");
     string line;
     getline(in, line);
     vector<string> P = splitWords(line);
