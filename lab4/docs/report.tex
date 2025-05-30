@@ -1,0 +1,54 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+
+\begin{document}
+
+\section*{Лабораторная работа №\,4 по курсу дискрeтного анализа: Строковые алгоритмы}
+
+Выполнил студент группы 08-215 МАИ \textit{Тараскаев Давид}.
+
+\subsection*{Условие}
+
+Необходимо реализовать один из стандартных алгоритмов поиска образцов для указанного алфавита.
+
+\begin{itemize}
+    \item Вариант алгоритма: Поиск одного образца при помощи алгоритма Бойера-Мура.
+    \item Вариант алфавита: Слова не более 16 знаков латинского алфавита (регистронезависимые).
+\end{itemize}
+
+\subsection*{Описание программы}
+
+\begin{description}
+\item[{toLower()}] --- преобразует символы строки в нижний регистр
+\item[{splitWords()}] --- разбивает строку на вектор слов с конвертацией регистра
+\item[{buildBadChar()}] --- строит таблицу "плохих символов" для последнего вхождения слов
+\item[{buildGoodSuffix()}] --- вычисляет оптимальные смещения для "хороших суффиксов"
+\item[Основной алгоритм] --- комбинирует две эвристики для эффективного поиска:
+\begin{itemize}
+    \item Сравнение образца с текстом справа налево
+    \item Выбор максимального смещения из двух эвристик
+    \item Сохранение позиций всех найденных вхождений
+\end{itemize}
+\end{description}
+
+\subsection*{Дневник отладки}
+
+
+\subsection*{Тест производительности}
+
+БОЙЕР-МУР - goodSuffix - Elapsed time: 3.96757 seconds
+НАИВНЫЙ АЛГОРИТМ - Elapsed time: 44.3244 seconds
+
+\subsection*{Выводы}
+
+
+\end{document}
