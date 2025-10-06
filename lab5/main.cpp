@@ -2,7 +2,7 @@
 
 using namespace std;
 
-vector<int> countSort1(string s) {
+vector<int> countSort1(string& s) {
     vector<int> c(27, 0);
     for (int i = 0; i < s.size(); ++i) {
         if (s[i] == '$') {
@@ -22,7 +22,7 @@ vector<int> countSort1(string s) {
     return a;
 }
 
-vector<int> countSort2(vector<int>& idx, vector<int>& eq, int eq_c) {
+vector<int> countSort2(vector<int>& idx, vector<int>& eq, int& eq_c) {
     vector<int> c(eq_c + 1, 0);
     for (int i = 0; i < idx.size(); ++i) {
         c[eq[idx[i]]]++;
@@ -37,7 +37,7 @@ vector<int> countSort2(vector<int>& idx, vector<int>& eq, int eq_c) {
     return a;
 }
 
-vector<int> buildSA(string s) {
+vector<int> buildSA(string& s) {
     int n = s.size();
     int start_n = n;
     int c = 1;
@@ -93,12 +93,55 @@ vector<int> buildSA(string s) {
     return res;
 }
 
+int lowerBound(string &s, vector<int> &sa, string &p) {
+    int l = 0, r = sa.size() - 1;
+    while (l < r) {
+        int mid = (l + r) / 2;
+        string suffix = s.substr(sa[mid], min(p.size(), s.size() - sa[mid]));
+        if (suffix >= p)
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    return l;
+}
+
+int upperBound(string &s, vector<int> &sa, string &p) {
+    int l = 0, r = sa.size() - 1;
+    while (l < r) {
+        int mid = (l + r) / 2;
+        string suffix = s.substr(sa[mid], min(p.size(), s.size() - sa[mid]));
+        if (suffix > p)
+            r = mid;
+        else
+            l = mid + 1;
+    }
+    return l;
+}
+
+vector<int> searchPattern(string &s, vector<int> &sa, string &p) {
+    int l = lowerBound(s, sa, p);
+    int r = upperBound(s, sa, p);
+    vector<int> ans;
+    for (int i = l; i < r; ++i) {
+        ans.push_back(sa[i] + 1);
+    }
+    sort(ans.begin(), ans.end());
+    return ans;
+}
+
 int main() {
     string s;
     cin >> s;
     vector<int> ans = buildSA(s);
     for (auto i : ans) {
         cout << i << ' ';
+    }
+    cout << '\n';
+    string p;
+    cin >> p;
+    for (int i : searchPattern(s, ans, p)) {
+        cout << i << " ";
     }
     return 0;
 }
